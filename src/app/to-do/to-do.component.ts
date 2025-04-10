@@ -1,6 +1,7 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { TaskFormComponent } from '../components/task-form/task-form.component';
 
 interface Task {
   title: string;
@@ -10,22 +11,33 @@ interface Task {
 @Component({
   selector: 'app-to-do',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, TaskFormComponent],
   templateUrl: './to-do.component.html',
   styleUrls: ['./to-do.component.css']
 })
-export class ToDoComponent {
+export class ToDoComponent implements OnInit {
   tasks: Task[] = [];
-  newTask: string = '';
 
-  addTask() {
-    if (!this.newTask.trim()) return;
+  ngOnInit() {
+    const savedTasks = localStorage.getItem('tasks');
 
-    this.tasks.push({ title: this.newTask.trim(), completed: false });
-    this.newTask = '';
+    if (savedTasks) {
+      this.tasks = JSON.parse(savedTasks);
+    }
+  }
+
+  saveTasks() {
+    localStorage.setItem('tasks', JSON.stringify(this.tasks));
+  }
+
+  addTask(task: string) {
+    console.log('Adding task:', task);
+    this.tasks.push({ title: task, completed: false });
+    this.saveTasks();
   }
 
   removeTask(task: Task) {
     this.tasks = this.tasks.filter(t => t !== task);
+    this.saveTasks();
   }
 }
