@@ -1,8 +1,3 @@
-.completed {
-  text-decoration: line-through;
-  color: gray;
-}
-
 .todo-container {
   max-width: 500px;
   margin: auto;

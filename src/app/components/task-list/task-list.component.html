@@ -1,0 +1,17 @@
+<div class="filters">
+  <button (click)="filter = 'all'" [class.active]="filter === 'all'">Todas</button>
+  <button (click)="filter = 'active'" [class.active]="filter === 'active'">Ativas</button>
+  <button (click)="filter = 'completed'" [class.active]="filter === 'completed'">Concluídas</button>
+</div>
+
+@if (filter !== 'completed') {
+  <p>{{ remainingTasksCount }} tarefa{{ remainingTasksCount > 1 ? 's' : ''}} restante{{ remainingTasksCount !== 1 ? 's' : '' }}</p>
+}
+
+<ul>
+  <li *ngFor="let task of filteredTasks">
+    <input type="checkbox" [(ngModel)]="task.completed" />
+    <span [class.completed]="task.completed">{{ task.title }}</span>
+    <button (click)="onRemove(task.id)">Remover</button>
+  </li>
+</ul>
