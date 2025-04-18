@@ -3,12 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { TaskFormComponent } from '../components/task-form/task-form.component';
 import { TaskListComponent } from '../components/task-list/task-list.component';
-
-interface Task {
-  id: number;
-  title: string;
-  completed: boolean;
-}
+import { Task, TaskService } from '../services/task.service';
 
 @Component({
   selector: 'app-to-do',
@@ -20,12 +15,10 @@ interface Task {
 export class ToDoComponent implements OnInit {
   tasks: Task[] = [];
 
-  ngOnInit() {
-    const savedTasks = localStorage.getItem('tasks');
+  constructor(private taskService: TaskService) {}
 
-    if (savedTasks) {
-      this.tasks = JSON.parse(savedTasks);
-    }
+  ngOnInit() {
+    this.tasks = this.taskService.getTasks();
   }
 
   saveTasks() {
@@ -33,17 +26,12 @@ export class ToDoComponent implements OnInit {
   }
 
   addTask(task: string) {
-    this.tasks.push({
-      id: Date.now(),
-      title: task,
-      completed: false
-    })
-
-    this.saveTasks();
+    this.taskService.addTask(task);
+    this.tasks = this.taskService.getTasks();
   }
 
   removeTask(id: number) {
-    this.tasks = this.tasks.filter(task => task.id !== id);
-    this.saveTasks();
+    this.taskService.removeTask(id);
+    this.tasks = this.taskService.getTasks();
   }
 }

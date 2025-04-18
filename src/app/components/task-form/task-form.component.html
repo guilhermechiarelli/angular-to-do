@@ -1,4 +1,8 @@
-<form (submit)="submit()">
-  <input [(ngModel)]="task" placeholder="Digite uma nova tarefa" name="task" />
+<form [formGroup]="taskForm" (submit)="submit()">
+  <input formControlName="task" placeholder="Digite uma nova tarefa" name="task" />
   <button type="submit">Adicionar</button>
 </form>
+
+<div *ngIf="taskForm.controls['task'].invalid && formSubmitted" style="color: red;">
+  A tarefa não pode estar vazia.
+</div>

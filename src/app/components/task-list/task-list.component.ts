@@ -1,6 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { TaskService } from '../../services/task.service';
 
 type Task = {
   id: number;
@@ -21,6 +22,8 @@ export class TaskListComponent {
   @Input() tasks: Task[] = [];
   @Output() remove = new EventEmitter<number>();
 
+  constructor(private taskService: TaskService) {}
+
   get remainingTasksCount() {
     return this.tasks.filter(task => !task.completed).length;
   }
@@ -39,5 +42,9 @@ export class TaskListComponent {
 
   onRemove(id: number) {
     this.remove.emit(id);
+  }
+
+  onToggleCompleted() {
+    this.taskService.saveTasks();
   }
 }

@@ -1,25 +1,38 @@
 import { CommonModule } from '@angular/common';
-import { Component, EventEmitter, Output } from '@angular/core';
-import { FormsModule } from '@angular/forms';
+import { Component, EventEmitter, OnInit, Output } from '@angular/core';
+import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 
 @Component({
   selector: 'app-task-form',
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, ReactiveFormsModule],
   templateUrl: './task-form.component.html',
   styleUrl: './task-form.component.css'
 })
-export class TaskFormComponent {
-  task: string = '';
+export class TaskFormComponent implements OnInit {
+  taskForm!: FormGroup;
+  formSubmitted: boolean = false;
+
+  constructor(private fb: FormBuilder) {}
 
   @Output() taskAdded = new EventEmitter<string>();
 
-  submit() {
-    const task = this.task.trim();
+  ngOnInit() {
+    this.taskForm = this.fb.group({
+      task: ['', Validators.required]
+    })
+  }
 
-    if (!task.trim()) return;
+  submit() {
+    this.formSubmitted = true;
+
+    const task = this.taskForm.value.task.trim();
+
+    if (this.taskForm.invalid) return;
 
     this.taskAdded.emit(task);
 
-    this.task = '';
+    this.taskForm.reset();
+
+    this.formSubmitted = false;
   }
 }
